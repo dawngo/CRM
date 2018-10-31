@@ -1,0 +1,44 @@
+{% extends 'stark/base.html' %}
+
+{% block title %}
+    <title>删</title>
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/form.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">删除数据</div>
+                <div class="panel-body">
+                    <table class="table table-striped table-bordered table-hover table-responsive text-center">
+                        <thead>
+                            <tr>
+                                {% for head_field in header_list %}
+                                    <th class="text-center">{{ head_field }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for field in del_obj_temp %}
+                                    <td>{{ field }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm active" type="submit">删除</button>
+                        <a href="{{ list_url }}" class="btn btn-info btn-sm active" role="button">取消</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

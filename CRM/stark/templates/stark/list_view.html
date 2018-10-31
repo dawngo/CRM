@@ -1,0 +1,112 @@
+{% extends 'stark/base.html' %}
+
+{% block title %}
+    <title>查</title>
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/list_view.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel panel-primary">
+                <div class="panel-heading">查看数据</div>
+                <div class="panel-body" id="parent">
+                    <div style="margin-bottom: 10px">
+                        <a href="{{ add_url }}" class="btn btn-success">添加数据</a>
+                        {% if show_list.config_obj.search_fields %}
+                            <form class="form-inline" style="display: inline-block;margin-left: 100px" method="get"
+                                  action="">
+                                <div class="form-group">
+                                    <input name='search_condition' type="text" class="form-control" id="search"
+                                           placeholder="Search">
+                                </div>
+                                <button type="submit" class="btn btn-info">search</button>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                    <form action="" class="form-inline" method="post">
+                        {% csrf_token %}
+                        <div id='action'>
+                            <select name='action' class="form-control" style="display: inline-block;width: 200px">
+                                <option value="">----------</option>
+                                {% for action in show_list.get_new_actions %}
+                                    <option value="{{ action.name }}">{{ action.text }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-success" type="submit">Go</button>
+                        </div>
+
+
+                        <table class="table table-striped table-bordered table-hover table-responsive text-center">
+                            <thead>
+                            <tr>
+                                {% for head_field in show_list.get_header %}
+                                    <th class="text-center">{{ head_field }}</th>
+                                {% endfor %}
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for data in show_list.get_body %}
+                                <tr>
+                                    {% for field in data %}
+                                        <td>{{ field }}</td>
+                                    {% endfor %}
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="pull-right">
+                        {{ show_list.pagination.ret_html|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading text-center">Filters</div>
+                <div class="panel-body" id="parent">
+                    {% for head, tag_list in show_list.get_list_filter_links.items %}
+                        <div class="list-group">
+                            <a href="#" class="list-group-item active">By  {{ head|title }}</a>
+                            <a href="{{ list_url }}" class="list-group-item">全部</a>
+                            {% for tag in tag_list %}
+                                {{ tag|safe }}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/jquery.js"></script>
+    <script>
+        $(".record").change(function () {
+
+            var pk=$(this).attr("pk");
+            var record=$(this).val();
+            $.ajax({
+                url:"/stark/app01/studentstudyrecord/"+pk+"/edit_record/",
+                type:"post",
+                data:{
+                    record:record,
+                    "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                },
+                success:function (data) {
+                    console.log(data)
+                }
+            })
+        })
+    </script>
+{% endblock js%}
