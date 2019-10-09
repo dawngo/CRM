@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>录入成绩</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7/css/bootstrap.css">
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/record_score.js"></script>
+    <style>
+        #my_panle>form>table>tbody>tr>td{
+            vertical-align: middle;
+            text-align: center;
+        }
+        #my_panle>form>table>thead>tr>th{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container" style="margin-top: 70px">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <p class="panel-title">{{ cls_record.class_obj }} day{{ cls_record.day_num }}天 成绩录入</p>
+                </div>
+                <div class="panel-body" id="my_panle">
+                    <form action="" method="post" >
+                        <table class="table table-hover table-responsive table-bordered">
+                            {% csrf_token %}
+                            <thead>
+                            <tr class="text-center">
+                                <th>序号</th>
+                                <th>姓名</th>
+                                <th>考勤</th>
+                                <th>成绩</th>
+                                <th>批语</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for student_study_record in student_study_record_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ student_study_record.student }}</td>
+                                    <td>{{ student_study_record.get_record_display }}</td>
+                                    <td>
+                                        <select name="score_{{ student_study_record.pk }}" class="score" sid="{{ student_study_record.pk }}">
+                                            {% for item in score_choices %}
+                                                {% if item.0 == student_study_record.score %}
+                                                    <option selected value="{{ item.0 }}">{{ item.1 }}</option>
+                                                {% endif %}
+                                                <option value="{{ item.0 }}">{{ item.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <textarea name="homework_note_{{ student_study_record.pk }}" class="note" id="" cols="30" rows="1" sid="{{ student_study_record.pk }}">{{ student_study_record.homework_note|default:"" }}</textarea>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <button class="btn btn-success pull-right" type="submit">保存</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
